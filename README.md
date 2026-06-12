@@ -1,6 +1,6 @@
-# Ultra Rotary Generator MK-II Advanced
+# Ultra Rotary Generator MK-III Research Edition
 
-A browser-based rotary generator and gear-train simulator with 2D schematic drawing, 3D visualization, live telemetry, diagnostics, export tools, and an R&D lab for digital-twin style experiments.
+A browser-based rotary generator and gear-train simulator with 2D schematic drawing, 3D visualization, live telemetry, diagnostics, export tools, an R&D lab for digital-twin style experiments, and an Analysis Lab with real FFT vibration spectra, gear stress calculation, lubrication-film modelling, efficiency maps, mission profiles, BOM costing, and a built-in self-test suite.
 
 > **Important:** This project is an educational and conceptual simulation. It is not a certified engineering calculator, safety system, or manufacturing-ready design package. Validate all real-world mechanical, electrical, thermal, and safety decisions with qualified engineering analysis and testing.
 
@@ -65,16 +65,35 @@ A browser-based rotary generator and gear-train simulator with 2D schematic draw
 * Best-control optimizer
 * Predictive maintenance plan export
 
+### Analysis Lab (new in MK-III)
+
+* **FFT vibration spectrum** — a real 2048-point radix-2 FFT (Hann-windowed, 8192 Hz sample rate) over a synthesized accelerometer signal containing shaft 1×/2× components, gear-mesh frequency (GMF) harmonics with sidebands, and rolling-element bearing defect tones (BPFO, BPFI, BSF, FTF). Fault injection changes the spectrum the way it would on a real machine, and a spectral diagnosis line identifies the dominant signature.
+* **Gear tooth stress** — Lewis bending stress with the Barth dynamic factor and tabulated 20° full-depth form factors, plus Hertzian contact stress with per-material elastic coefficients. Live safety factors against material allowables feed the risk index.
+* **Lubrication film model** — Vogel-type viscosity-temperature behaviour (ISO VG grades), simplified Hamrock–Dowson EHL film thickness, and the λ ratio classifying the regime as boundary, mixed, or full film.
+* **Efficiency island map** — a 2D heatmap of efficiency across RPM × load with a live crosshair on the current operating point.
+* **Mission profile editor** — define operating phases (duration, throttle, load, cooling), then simulate the whole mission with per-second thermal integration and Miner's-rule fatigue accumulation. Reports energy produced, peak temperature, damage per mission, and missions-to-failure.
+* **BOM + cost estimator** — gears, shaft, bearings, magnet rotor, copper windings, housing, lubricant, and labour estimated from the current geometry and material, exportable as CSV.
+* **Self-test suite** — 12 built-in validation tests covering the FFT, Lewis factors, viscosity model, λ monotonicity, bearing frequency ordering, unit conversion, and export formats.
+
+### Quality of Life (new in MK-III)
+
+* Metric / imperial unit switching (persisted)
+* Design library — save, load, and delete named configurations in browser storage
+* PNG snapshot export of the 3D view
+* Keyboard shortcuts: **Space** pause, **G** regenerate, **R** reset camera, **1–6** switch tabs
+
 ### Export Tools
 
-* CSV telemetry export
+* CSV telemetry export (now including film λ and stress safety factors)
 * JSON configuration export/import
 * R&D report export
 * Predictive maintenance plan export
+* BOM cost estimate export
 * SVG export
 * DXF export
 * STL export
 * GLB export
+* PNG snapshot export
 * GIF animation export
 
 ---
@@ -286,15 +305,20 @@ The simulator combines simplified models for:
 * Gear friction
 * Thermal rise
 * Load effects
-* Vibration
+* Vibration (including synthesized spectra with shaft, gear-mesh, and bearing defect components)
 * Efficiency
 * Electrical output
-* Lubrication degradation
+* Lubrication degradation (Vogel viscosity-temperature + EHL film λ ratio)
+* Gear tooth bending stress (Lewis equation with Barth dynamic factor)
+* Gear contact stress (Hertzian, per-material elastic coefficients)
 * Bearing L10-style life estimation
+* Miner's-rule fatigue accumulation over mission profiles
 * Resonance margin
 * Fault severity
 * Risk scoring
 * Remaining useful life
+
+The engineering formulas (Lewis, Hertz, L10, Miner, bearing defect frequencies) are textbook methods applied with assumed geometry factors. They are far better than arbitrary heuristics for exploring trends, but they are still not a substitute for a full ISO 6336 / AGMA rating or measured data.
 
 These models are intentionally approximate and designed for interactive exploration, not for final engineering validation.
 
@@ -308,19 +332,16 @@ Do not use this app alone to design, manufacture, certify, or operate real rotat
 
 ## Suggested Improvements
 
+Implemented in MK-III: real FFT vibration analysis, mission profile editor, efficiency island maps, BOM and cost estimator, improved bearing and lubricant models (Vogel viscosity + EHL λ ratio), gear tooth stress calculation (Lewis + Hertz), unit system switching, project save/load manager (design library), and a validation self-test suite.
+
 Future upgrades could include:
 
-* Real FFT vibration analysis
-* Mission profile editor
-* Efficiency island maps
-* BOM and cost estimator
-* More accurate bearing and lubricant models
-* Gear tooth stress calculation
-* Thermal finite-difference model
+* Thermal finite-difference model (multi-node gear/housing/oil network)
+* Order-tracking and waterfall spectrum displays
 * Offline library bundling
-* Unit system switching
-* Project save/load manager
-* Validation test suite
+* ISO 6336 / AGMA 2101 full rating method
+* Gearbox housing modal analysis for resonance modes
+* WebGPU-accelerated particle and physics simulation
 
 ---
 
